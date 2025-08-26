@@ -6,6 +6,10 @@ on:
       - 'main'
     paths:
       - 'sgcmapi/**'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'sgcmapi/**'
 
 jobs:
   build:
@@ -22,3 +26,23 @@ jobs:
       - name: Maven Compile/Test
         working-directory: sgcmapi/
         run: mvn compile test
+  merge:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull-request'
+    steps:
+      - uses: actions/checkout@v5
+      - name: Filtro de arquivos
+        id: filtro
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            java:
+              - '**/*.java'
+      - name: Merge
+        if: ${{!contains(steps.filtro.outputs.change, 'java')}}
+        uses: devmasx/merge-branch@
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ github.token }}
