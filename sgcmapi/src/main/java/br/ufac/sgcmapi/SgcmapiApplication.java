@@ -11,6 +11,8 @@ public class SgcmapiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SgcmapiApplication.class, args);
+
+		System.out.println("oi");
 	}
 
 // lalalallala
