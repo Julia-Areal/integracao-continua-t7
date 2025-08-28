@@ -1,4 +1,4 @@
-name: Deploy Back-End
+name: Deploy Back-end
 on:
   workflow_dispatch:
 jobs:
@@ -10,21 +10,20 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: Julia-Areal
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Construir e enviar a imagem Docker
         uses: docker/build-push-action@v6
         with:
           context: sgcmapi/
           push: true
-          tags: ghcr.io/juliaareal/sgcmapi:latest
+          tags: ghcr.io/${{ github.repository_owner }}/sgcmapi:latest
   deploy:
     needs: build-push
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
-        uses: webacademy/deploy-action@main
+        uses: webacademyufac/deploy-action@main
         with:
           app-id: ${{ secrets.DEPLOY_APP_ID }}
-          app-key: ${{ secrets.DEPLOY_API_KEY }}
-          # mudança
+          api-key: ${{ secrets.DEPLOY_API_KEY }}
